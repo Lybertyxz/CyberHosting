@@ -1,0 +1,5 @@
+FROM dart:stable
+WORKDIR /app
+COPY ./wall /app
+RUN dart pub get
+CMD ["dart", "bin/social_wall.dart"]

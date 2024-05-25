@@ -1,0 +1,47 @@
+version: "3"
+services:
+  bank_app:
+    build:
+      context: .
+      dockerfile: Dockerfile.bank
+    networks:
+      - internal
+    expose:
+      - "80"
+
+  wall_app:
+    build:
+      context: .
+      dockerfile: Dockerfile.wall
+    networks:
+      - internal
+    expose:
+      - "80"
+
+  cdn:
+    build:
+      context: .
+      dockerfile: Dockerfile.cdn
+    networks:
+      - internal
+    expose:
+      - "80"
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - bank_app
+      - wall_app
+      - cdn
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
